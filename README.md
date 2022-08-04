@@ -24,3 +24,10 @@ So after far too many words, this is the script that I run after each Steam OS
 update to fix it up so I can build stuff on it. Refinements, comments, and
 rants are welcome.
 
+- setup-img.sh: Is the main script, run it as root. Pacman will prompt you
+  occationally. It is well documented, and there is a list of packages at the
+  top that you should edit.
+
+- setup-krb5.sh: Is my script to setup the deck as part of my kerbreos realm,
+  you probably can just ignore it.
+
