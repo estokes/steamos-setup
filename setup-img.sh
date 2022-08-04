@@ -9,8 +9,8 @@ trap exit SIGINT SIGQUIT SIGTERM
 # stop if any command fails
 set -e
 
-# dev packages you want installed, edit this as desired
-DEVPACKS="base-devel gtksourceview4 gnumeric emacs syncthing gnome-keyring gst-plugins-bad gkrellm"
+# pacman packages you want installed, edit this as desired
+PACKS="base-devel gtksourceview4 gnumeric emacs syncthing gnome-keyring gst-plugins-bad gkrellm"
 
 # list of packages not to mess with
 SKIP="dracut"
@@ -35,18 +35,19 @@ pacman-key --init
 pacman-key --populate archlinux
 pacman-key --populate holo
 
-# update the system
+# update the system, usually nothing, but just in case
 pacman --overwrite '*' -Syu
 
 # install pacutils so we can use paccheck to find packages with missing or
 # changed files
 pacman --overwrite '*' -S pacutils
 
-# presumably for the 64 gig model they delete header files, man pages and the
-# like from the image. So even though a package is installed it might be
+# presumably for the 64 gig model valve deletes header files, man pages and the
+# like from the image. So even though a package is "installed" it might be
 # missing files we use paccheck to find packages with missing files and then
-# reinstall them so we have a proper complement of header files and man pages.
-# Otherwise it's neigh impossible to build anything on steamos.
+# reinstall them telling pacman to overwrite existing files. Once finished we
+# should have a proper complement of header files. Otherwise it's neigh
+# impossible to build anything on steamos.
 REINSTALL=$(paccheck --md5sum --quiet 2>&1 | \
 	grep -i "no such file or directory" | \
 	awk '{print $2}' | \
@@ -54,12 +55,11 @@ REINSTALL=$(paccheck --md5sum --quiet 2>&1 | \
 	sed -e 's/:$//' | \
 	grep -vE $SKIP)
 
+# fix the identified broken packages
 retry_cmd pacman --overwrite '*' -S $REINSTALL
 
-# free space on the exceedingly tiny root partition
-rm -rf /var/cache/pacman/pkg/*
+# install user requested packages
+retry_cmd pacman --overwrite '*' -S $PACKS
 
-retry_cmd pacman --overwrite '*' -S $DEVPACKS
+echo "steamos image setup success"
 
-# free space on the exceedingly tiny root partition
-rm -rf /var/cache/pacman/pkg/*
