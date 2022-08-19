@@ -56,10 +56,10 @@ REINSTALL=$(paccheck --md5sum --quiet 2>&1 | \
 	grep -vE $SKIP)
 
 # fix the identified broken packages
-retry_cmd pacman --overwrite '*' -S $REINSTALL
+retry_cmd pacman --overwrite '\*' -S "$REINSTALL"
 
 # install user requested packages
-retry_cmd pacman --overwrite '*' -S $PACKS
+retry_cmd pacman --overwrite '\*' -S "$PACKS"
 
 echo "steamos image setup success"
 
