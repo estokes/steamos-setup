@@ -10,7 +10,7 @@ trap exit SIGINT SIGQUIT SIGTERM
 set -e
 
 # pacman packages you want installed, edit this as desired
-PACKS="base-devel gtksourceview4 gnumeric emacs syncthing gnome-keyring gst-plugins-bad gkrellm python-pip"
+PACKS="base-devel gtksourceview4 gnumeric emacs syncthing gnome-keyring gst-plugins-bad gkrellm python-pip dotnet-sdk net-tools"
 
 # list of packages not to mess with
 SKIP="dracut"
@@ -62,8 +62,8 @@ retry_cmd pacman --overwrite '\*' -S "$REINSTALL"
 retry_cmd pacman --overwrite '\*' -S "$PACKS"
 
 # enable and start syncthing
-sudo -u deck systemctl --user enable syncthing
-sudo -u deck systemctl --user start syncthing
+sudo -u deck bash -c 'systemctl --user enable syncthing'
+sudo -u deck bash -c 'systemctl --user start syncthing'
 
 # install paru from aur
 pacman -U ~deck/ext/paru-bin/paru-bin-1.11.1-1-x86_64.pkg.tar.zst
